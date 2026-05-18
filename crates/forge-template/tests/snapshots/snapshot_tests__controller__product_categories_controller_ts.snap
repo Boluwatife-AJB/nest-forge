@@ -1,0 +1,16 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+import { Controller, Get } from '@nestjs/common';
+import { ProductCategoriesService } from './product-categories.service';
+
+@Controller('product-categories')
+export class ProductCategoriesController {
+  constructor(private readonly productCategoriesService: ProductCategoriesService) {}
+
+  @Get()
+  findAll() {
+    return this.productCategoriesService.findAll();
+  }
+}

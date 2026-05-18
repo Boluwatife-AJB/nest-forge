@@ -1,0 +1,17 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+import { ProductsMiddleware } from './products.middleware';
+
+describe('ProductsMiddleware', () => {
+  let middleware: ProductsMiddleware;
+
+  beforeEach(() => {
+    middleware = new ProductsMiddleware();
+  });
+
+  it('should be defined', () => {
+    expect(middleware).toBeDefined();
+  });
+});

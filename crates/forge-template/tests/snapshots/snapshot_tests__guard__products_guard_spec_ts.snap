@@ -1,0 +1,17 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+import { ProductsGuard } from './products.guard';
+
+describe('ProductsGuard', () => {
+  let guard: ProductsGuard;
+
+  beforeEach(() => {
+    guard = new ProductsGuard();
+  });
+
+  it('should be defined', () => {
+    expect(guard).toBeDefined();
+  });
+});

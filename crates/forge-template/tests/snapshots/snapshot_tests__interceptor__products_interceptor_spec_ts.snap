@@ -1,0 +1,17 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+import { ProductsInterceptor } from './products.interceptor';
+
+describe('ProductsInterceptor', () => {
+  let interceptor: ProductsInterceptor;
+
+  beforeEach(() => {
+    interceptor = new ProductsInterceptor();
+  });
+
+  it('should be defined', () => {
+    expect(interceptor).toBeDefined();
+  });
+});

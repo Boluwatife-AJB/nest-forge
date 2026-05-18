@@ -1,0 +1,13 @@
+import { {{ name.pascal }}Guard } from './{{ name.kebab }}.guard';
+
+describe('{{ name.pascal }}Guard', () => {
+  let guard: {{ name.pascal }}Guard;
+
+  beforeEach(() => {
+    guard = new {{ name.pascal }}Guard();
+  });
+
+  it('should be defined', () => {
+    expect(guard).toBeDefined();
+  });
+});

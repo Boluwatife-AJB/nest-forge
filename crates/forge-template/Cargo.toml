@@ -1,0 +1,17 @@
+[package]
+name = "forge-template"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+thiserror.workspace = true
+serde.workspace = true
+heck.workspace = true
+tera = "1"
+rust-embed = "8"
+tracing.workspace = true
+
+[dev-dependencies]
+insta = {workspace = true}
+proptest ={ workspace = true}
+heck ={ workspace = true}

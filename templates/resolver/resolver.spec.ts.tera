@@ -1,0 +1,18 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { {{ name.pascal }}Resolver } from './{{ name.kebab }}.resolver';
+
+describe('{{ name.pascal }}Resolver', () => {
+  let resolver: {{ name.pascal }}Resolver;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [{{ name.pascal }}Resolver],
+    }).compile();
+
+    resolver = module.get<{{ name.pascal }}Resolver>({{ name.pascal }}Resolver);
+  });
+
+  it('should be defined', () => {
+    expect(resolver).toBeDefined();
+  });
+});

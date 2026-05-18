@@ -1,0 +1,9 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+export default () => ({
+  products: {
+    // TODO: define config values
+  },
+});

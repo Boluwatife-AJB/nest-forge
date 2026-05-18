@@ -1,0 +1,17 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+import { ProductsPipe } from './products.pipe';
+
+describe('ProductsPipe', () => {
+  let pipe: ProductsPipe;
+
+  beforeEach(() => {
+    pipe = new ProductsPipe();
+  });
+
+  it('should be defined', () => {
+    expect(pipe).toBeDefined();
+  });
+});

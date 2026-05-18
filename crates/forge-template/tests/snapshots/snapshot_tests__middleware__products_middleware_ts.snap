@@ -1,0 +1,13 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Request, Response, NextFunction } from 'express';
+
+@Injectable()
+export class ProductsMiddleware implements NestMiddleware {
+  use(req: Request, res: Response, next: NextFunction) {
+    next();
+  }
+}

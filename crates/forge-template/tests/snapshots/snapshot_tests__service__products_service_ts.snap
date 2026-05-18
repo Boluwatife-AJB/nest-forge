@@ -1,0 +1,10 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class ProductsService {
+  // TODO: inject dependencies via constructor
+}

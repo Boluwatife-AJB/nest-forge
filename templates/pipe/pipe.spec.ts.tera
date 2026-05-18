@@ -1,0 +1,13 @@
+import { {{ name.pascal }}Pipe } from './{{ name.kebab }}.pipe';
+
+describe('{{ name.pascal }}Pipe', () => {
+  let pipe: {{ name.pascal }}Pipe;
+
+  beforeEach(() => {
+    pipe = new {{ name.pascal }}Pipe();
+  });
+
+  it('should be defined', () => {
+    expect(pipe).toBeDefined();
+  });
+});

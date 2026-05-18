@@ -1,0 +1,17 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+import { ProductsFilter } from './products.filter';
+
+describe('ProductsFilter', () => {
+  let filter: ProductsFilter;
+
+  beforeEach(() => {
+    filter = new ProductsFilter();
+  });
+
+  it('should be defined', () => {
+    expect(filter).toBeDefined();
+  });
+});

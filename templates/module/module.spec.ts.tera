@@ -1,0 +1,16 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { {{ name.pascal }}Module } from './{{ name.kebab }}.module';
+
+describe('{{ name.pascal }}Module', () => {
+  let module: TestingModule;
+
+  beforeEach(async () => {
+    module = await Test.createTestingModule({
+      imports: [{{ name.pascal }}Module],
+    }).compile();
+  });
+
+  it('should be defined', () => {
+    expect(module).toBeDefined();
+  });
+});

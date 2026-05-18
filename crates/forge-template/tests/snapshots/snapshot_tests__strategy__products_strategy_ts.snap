@@ -1,0 +1,18 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+import { Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { Strategy } from 'passport-local';
+
+@Injectable()
+export class ProductsStrategy extends PassportStrategy(Strategy) {
+  constructor() {
+    super();
+  }
+
+  async validate(username: string, password: string): Promise<any> {
+    return null;
+  }
+}

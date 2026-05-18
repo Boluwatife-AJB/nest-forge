@@ -1,0 +1,11 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
+@Entity()
+export class Products {
+  @PrimaryGeneratedColumn()
+  id: number;
+}

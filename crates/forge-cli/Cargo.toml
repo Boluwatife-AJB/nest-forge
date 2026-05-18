@@ -1,0 +1,22 @@
+[package]
+name = "forge"
+version = "0.1.0"
+edition = "2024"
+description = "A NestJS artifact generator CLI tool, built with Rust"
+license = "MIT"
+
+[[bin]]
+name="forge"
+path="src/main.rs"
+
+[dependencies]
+forge-core = { path = "../forge-core" }
+forge-template = { path = "../forge-template" }
+forge-config = { path = "../forge-config" }
+clap.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+console.workspace = true
+serde.workspace = true
+serde_json.workspace = true

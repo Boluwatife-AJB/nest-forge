@@ -1,0 +1,13 @@
+import { {{ name.pascal }}Interceptor } from './{{ name.kebab }}.interceptor';
+
+describe('{{ name.pascal }}Interceptor', () => {
+  let interceptor: {{ name.pascal }}Interceptor;
+
+  beforeEach(() => {
+    interceptor = new {{ name.pascal }}Interceptor();
+  });
+
+  it('should be defined', () => {
+    expect(interceptor).toBeDefined();
+  });
+});

@@ -1,0 +1,7 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+export class CreateProductCategoryDtoDto {
+  // TODO: define DTO properties
+}

@@ -1,0 +1,20 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { {{ name.pascal }}Controller } from './{{ name.kebab }}.controller';
+import { {{ name.pascal }}Service } from './{{ name.kebab }}.service';
+
+describe('{{ name.pascal }}Controller', () => {
+  let controller: {{ name.pascal }}Controller;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [{{ name.pascal }}Controller],
+      providers: [{{ name.pascal }}Service],
+    }).compile();
+
+    controller = module.get<{{ name.pascal }}Controller>({{ name.pascal }}Controller);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+});

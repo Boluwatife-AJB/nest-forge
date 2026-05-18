@@ -1,0 +1,20 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+import { Test, TestingModule } from '@nestjs/testing';
+import { ProductsModule } from './products.module';
+
+describe('ProductsModule', () => {
+  let module: TestingModule;
+
+  beforeEach(async () => {
+    module = await Test.createTestingModule({
+      imports: [ProductsModule],
+    }).compile();
+  });
+
+  it('should be defined', () => {
+    expect(module).toBeDefined();
+  });
+});

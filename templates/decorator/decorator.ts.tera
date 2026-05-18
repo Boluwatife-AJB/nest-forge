@@ -1,0 +1,3 @@
+import { SetMetadata } from '@nestjs/common';
+
+export const {{ name.pascal }} = (...args: string[]) => SetMetadata('{{ name.snake }}', args);

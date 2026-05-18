@@ -1,0 +1,13 @@
+import { {{ name.pascal }}Middleware } from './{{ name.kebab }}.middleware';
+
+describe('{{ name.pascal }}Middleware', () => {
+  let middleware: {{ name.pascal }}Middleware;
+
+  beforeEach(() => {
+    middleware = new {{ name.pascal }}Middleware();
+  });
+
+  it('should be defined', () => {
+    expect(middleware).toBeDefined();
+  });
+});

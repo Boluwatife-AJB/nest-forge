@@ -1,0 +1,13 @@
+---
+source: crates/forge-template/tests/snapshot_tests.rs
+expression: file.contents
+---
+import { Resolver, Query } from '@nestjs/graphql';
+
+@Resolver()
+export class ProductsResolver {
+  @Query(() => String)
+  products() {
+    return 'products';
+  }
+}

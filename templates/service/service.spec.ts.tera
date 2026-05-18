@@ -1,0 +1,18 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { {{ name.pascal }}Service } from './{{ name.kebab }}.service';
+
+describe('{{ name.pascal }}Service', () => {
+  let service: {{ name.pascal }}Service;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [{{ name.pascal }}Service],
+    }).compile();
+
+    service = module.get<{{ name.pascal }}Service>({{ name.pascal }}Service);
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+});

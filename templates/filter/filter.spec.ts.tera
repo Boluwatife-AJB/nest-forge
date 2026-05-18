@@ -1,0 +1,13 @@
+import { {{ name.pascal }}Filter } from './{{ name.kebab }}.filter';
+
+describe('{{ name.pascal }}Filter', () => {
+  let filter: {{ name.pascal }}Filter;
+
+  beforeEach(() => {
+    filter = new {{ name.pascal }}Filter();
+  });
+
+  it('should be defined', () => {
+    expect(filter).toBeDefined();
+  });
+});
