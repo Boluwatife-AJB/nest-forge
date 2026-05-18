@@ -39,7 +39,7 @@ pub struct GenerateArgs {
 
 pub fn run(args: GenerateArgs) -> Result<()> {
     // Resolve artifact kind
-    let kind = ArtifactKind::from_str(&args.artifact).ok_or_else(|| {
+    let kind = args.artifact.parse::<ArtifactKind>().map_err(|_| {
         let suggestion =
             forge_core::suggest::closest_match(&args.artifact, ArtifactKind::all_names())
                 .map(|s| format!("Did you mean '{}'?", style(s).green()))
@@ -88,7 +88,7 @@ pub fn run(args: GenerateArgs) -> Result<()> {
     let config = resolve_config(&project_root, file_config.as_ref(), &cli_overrides).map_err(|e| anyhow!("Config error: {e}"))?;
 
     // Per-artifact path override > source_root
-    let output_path = config.output_path_for(&kind.template_name()).clone();
+    let output_path = config.output_path_for(kind.template_name()).clone();
 
     // Build generation request
     let request = GenerationRequest {

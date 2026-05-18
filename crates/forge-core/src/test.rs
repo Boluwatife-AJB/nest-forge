@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use super::*;
+    // use super::*;
     use crate::artifact::{ArtifactKind, ArtifactName};
 
     // ArtifactName Validation
@@ -70,34 +70,33 @@ mod tests {
     #[test]
     fn resolves_full_names() {
         assert_eq!(
-            ArtifactKind::from_str("service"),
-            Some(ArtifactKind::Service)
+            "service".parse::<ArtifactKind>(), Ok(ArtifactKind::Service)
         );
         assert_eq!(
-            ArtifactKind::from_str("controller"),
-            Some(ArtifactKind::Controller)
+            "controller".parse::<ArtifactKind>(),
+            Ok(ArtifactKind::Controller)
         );
     }
 
     #[test]
     fn resolves_aliases() {
-        assert_eq!(ArtifactKind::from_str("s"), Some(ArtifactKind::Service));
-        assert_eq!(ArtifactKind::from_str("co"), Some(ArtifactKind::Controller));
-        assert_eq!(ArtifactKind::from_str("mo"), Some(ArtifactKind::Module));
+        assert_eq!("s".parse::<ArtifactKind>(), Ok(ArtifactKind::Service));
+        assert_eq!("co".parse::<ArtifactKind>(), Ok(ArtifactKind::Controller));
+        assert_eq!("mo".parse::<ArtifactKind>(), Ok(ArtifactKind::Module));
     }
 
     #[test]
     fn resolution_is_case_insensitive() {
         assert_eq!(
-            ArtifactKind::from_str("SERVICE"),
-            Some(ArtifactKind::Service)
+            "SERVICE".parse::<ArtifactKind>(),
+            Ok(ArtifactKind::Service)
         );
-        assert_eq!(ArtifactKind::from_str("Module"), Some(ArtifactKind::Module));
+        assert_eq!("Module".parse::<ArtifactKind>(), Ok(ArtifactKind::Module));
     }
 
     #[test]
     fn unknown_artifact_returns_none() {
-        assert!(ArtifactKind::from_str("foobar").is_none());
+        assert!("foobar".parse::<ArtifactKind>().is_err());
     }
 
     // Suggestion engine

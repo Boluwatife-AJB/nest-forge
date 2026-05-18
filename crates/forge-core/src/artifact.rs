@@ -1,6 +1,7 @@
 use heck::{ToKebabCase, ToLowerCamelCase, ToPascalCase, ToSnakeCase};
 use serde::Serialize;
 use std::path::PathBuf;
+use std::str::FromStr;
 
 use crate::error::{ForgeError, ForgeResult};
 
@@ -25,29 +26,6 @@ pub enum ArtifactKind {
 }
 
 impl ArtifactKind {
-    /// Parse from a CLI string, including aliases.
-    pub fn from_str(s: &str) -> Option<Self> {
-        match s.to_lowercase().as_str() {
-            "module" | "mo" => Some(Self::Module),
-            "service" | "s" => Some(Self::Service),
-            "controller" | "co" => Some(Self::Controller),
-            "class" | "cl" => Some(Self::Class),
-            "dto" => Some(Self::Dto),
-            "guard" | "gu" => Some(Self::Guard),
-            "interceptor" | "itc" => Some(Self::Interceptor),
-            "interface" | "itf" => Some(Self::Interface),
-            "middleware" | "mi" => Some(Self::Middleware),
-            "pipe" | "p" => Some(Self::Pipe),
-            "decorator" | "d" => Some(Self::Decorator),
-            "strategy" => Some(Self::Strategy),
-            "filter" | "f" => Some(Self::Filter),
-            "config" => Some(Self::Config),
-            "resolver" | "r" => Some(Self::Resolver),
-            "entity" | "e" => Some(Self::Entity),
-            _ => None,
-        }
-    }
-
     /// The template directory name for this artifact.
     pub fn template_name(&self) -> &'static str {
         match self {
@@ -103,6 +81,32 @@ impl ArtifactKind {
             "entity",
             "e",
         ]
+    }
+}
+
+impl FromStr for ArtifactKind {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.to_lowercase().as_str() {
+            "module" | "mo" => Ok(Self::Module),
+            "service" | "s" => Ok(Self::Service),
+            "controller" | "co" => Ok(Self::Controller),
+            "class" | "cl" => Ok(Self::Class),
+            "dto" => Ok(Self::Dto),
+            "guard" | "gu" => Ok(Self::Guard),
+            "interceptor" | "itc" => Ok(Self::Interceptor),
+            "interface" | "itf" => Ok(Self::Interface),
+            "middleware" | "mi" => Ok(Self::Middleware),
+            "pipe" | "p" => Ok(Self::Pipe),
+            "decorator" | "d" => Ok(Self::Decorator),
+            "strategy" => Ok(Self::Strategy),
+            "filter" | "f" => Ok(Self::Filter),
+            "config" => Ok(Self::Config),
+            "resolver" | "r" => Ok(Self::Resolver),
+            "entity" | "e" => Ok(Self::Entity),
+            _ => Err(()),
+        }
     }
 }
 

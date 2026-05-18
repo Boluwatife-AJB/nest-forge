@@ -90,7 +90,7 @@ proptest! {
     "module", "service", "controller", "guard", "interceptor", "middleware", "pipe", "filter", "resolver", "entity", "dto", "decorator", "strategy", "interface", "class", "config"
   ])) {
     use forge_core::artifact::ArtifactKind;
-    let kind = ArtifactKind::from_str(kind_str).expect("known artifact string should resolve to a kind");
+    let kind = kind_str.parse::<ArtifactKind>().expect("known artifact string should resolve to a kind");
     prop_assert!(!kind.template_name().is_empty(), "template name for '{}' should be non-empty", kind_str);
   }
 }

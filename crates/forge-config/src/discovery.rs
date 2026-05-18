@@ -68,13 +68,13 @@ mod tests {
     assert_eq!(found, Some(project.path().to_path_buf()));
   }
 
-  fn finds_config_in_grandparent_directory() {
-    let project = setup_project(&["forge.json", "src/modules/products/dto/.gitkeep"]);
-    let deepdir = project.path().join("src/modules/products/dto");
+  // fn finds_config_in_grandparent_directory() {
+  //   let project = setup_project(&["forge.json", "src/modules/products/dto/.gitkeep"]);
+  //   let deepdir = project.path().join("src/modules/products/dto");
 
-    let found = find_project_root(&deepdir);
-    assert_eq!(found, Some(project.path().to_path_buf()));
-  }
+  //   let found = find_project_root(&deepdir);
+  //   assert_eq!(found, Some(project.path().to_path_buf()));
+  // }
 
   #[test]
   fn returns_none_when_no_config_exists() {
