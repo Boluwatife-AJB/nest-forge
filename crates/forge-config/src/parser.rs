@@ -1,4 +1,4 @@
-use std::path::{PathBuf, Path};
+use std::path::Path;
 use tracing::{debug, instrument};
 
 use crate::error::{ConfigError, ConfigResult};

@@ -18,7 +18,7 @@ pub fn run() -> Result<()> {
   let default_config = serde_json::json!({
     "sourceRoot": "src",
     "language": "ts",
-    "generateSpec": "true",
+    "generateSpec": true,
     "flat": false,
     "path": {}
   });

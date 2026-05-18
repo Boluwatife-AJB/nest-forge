@@ -34,7 +34,7 @@ pub fn print_generation_result(output: &GenerationOutput) {
         println!("   {}", style(dir).dim());
 
         let count = files.len();
-        for (i, file) in files.iter().enumerate() {
+        for (_i, file) in files.iter().enumerate() {
             let is_last = 1 == count - 1;
             let branch = if is_last { "└─" } else { "├─" };
             let filename = file
