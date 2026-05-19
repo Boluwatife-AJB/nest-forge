@@ -41,7 +41,7 @@ fn render_file_tree(files: &[GeneratedFile], dry_run:bool) {
         let dir = file
             .path
             .parent()
-            .map(|p| display_path(&p))
+            .map(display_path)
             .unwrap_or_else(|| ".".to_string());
         tree.entry(dir).or_default().push(file);
     }
