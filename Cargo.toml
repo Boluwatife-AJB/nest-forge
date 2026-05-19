@@ -10,7 +10,7 @@ members = [
 
 [workspace.dependencies]
 # Shared dependencies for all crates
-clap = { version = "4", features = ["derive"] }
+clap = { version = "4", features = ["derive", "env"] }
 thiserror = "1"
 anyhow = "1"
 serde = { version = "1", features = ["derive"] }
@@ -22,6 +22,8 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 console = "0.15"
 tempfile = "3"
+clap_complete = "4"
+supports-color = "3"
 # Testing
 insta ={ version = "1", features = ["json", "filters"]}
 proptest="1"
@@ -30,6 +32,6 @@ predicates= "2"
 
 [profile.release]
 opt-level = 3
-lto = true          # Link-Time Optimization - smaller, faster binary
-codegen-units = 1   # Maximize optimization at cost of compile time
-strip = true        # Strip debug symbols from release binary
+lto = true          
+codegen-units = 1   
+strip = true  

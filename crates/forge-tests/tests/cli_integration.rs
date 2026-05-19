@@ -1,8 +1,3 @@
-//! Integration tests for the forge CLI binary.
-//!
-//! These tests use `assert_cmd` to run the real compiled binary
-//! and check its stdout, stderr, and exit code.
-
 use assert_cmd::Command;
 use predicates::prelude::*;
 use std::fs;
@@ -473,4 +468,175 @@ fn init_fails_if_forge_json_already_exists() {
         .assert()
         .failure()
         .stderr(predicate::str::contains("forge.json already exists"));
+}
+
+// Error output quality
+#[test]
+fn error_output_is_on_stderr_not_stdout() {
+    let dir = temp_project(None);
+
+    let output = forge()
+        .current_dir(dir.path())
+        .args(["generate", "foobar", "products"])
+        .output()
+        .unwrap();
+
+    assert!(
+        output.stdout.is_empty() || String::from_utf8_lossy(&output.stdout).trim().is_empty(),
+        "error must go to stderr, not stdout"
+    );
+
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("Unknown artifact"));
+}
+
+#[test]
+fn error_includes_hint() {
+    let dir = temp_project(None);
+
+    forge()
+        .current_dir(dir.path())
+        .args(["generate", "foobar", "products"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("hint:").or(predicate::str::contains("forge generate --help")));
+}
+
+// Shell completions
+#[test]
+fn completions_bash_outputs_shell_script() {
+    forge()
+        .args(["completions", "bash"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("forge"));
+}
+
+#[test]
+fn completions_zsh_outputs_shell_scripts() {
+    forge()
+        .args(["completions", "zsh"])
+        .assert()
+        .success()
+        .stdout(predicate::str::is_empty().not());
+}
+
+#[test]
+fn completions_fish_outputs_shell_script() {
+    forge()
+        .args(["completions", "fish"])
+        .assert()
+        .success()
+        .stdout(predicate::str::is_empty().not());
+}
+
+// Info command
+
+#[test]
+fn info_shows_version() {
+    forge()
+        .arg("info")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(env!("CARGO_PKG_VERSION")));
+}
+
+#[test]
+fn info_shows_source_root() {
+    let dir = temp_project(Some(r#"{ "sourceRoot": "app" } "#));
+
+    forge()
+        .current_dir(dir.path())
+        .arg("info")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("app"));
+}
+
+#[test]
+fn info_reports_missing_config() {
+    let dir = temp_project(None);
+
+    forge()
+        .current_dir(dir.path())
+        .arg("info")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("not found"));
+}
+
+#[test]
+fn info_shows_path_overrides_when_configured() {
+    let config = r#"{ "paths": { "entity": "src/database/entities" } }"#;
+    let dir = temp_project(Some(config));
+
+    forge()
+        .current_dir(dir.path())
+        .arg("info")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("entity"))
+        .stdout(predicate::str::contains("src/database/entities"));
+}
+
+// NO color support
+#[test]
+fn no_color_flag_produces_plain_output() {
+    let dir = temp_project(None);
+
+    let output = forge()
+        .current_dir(dir.path())
+        .args(["--no-color", "generate", "service", "products", "dry-run"])
+        .output()
+        .unwrap();
+
+    assert!(
+        output.stdout.is_empty() || String::from_utf8_lossy(&output.stdout).trim().is_empty(),
+        "output should be plain text, not colored"
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(!stdout.contains("\x1b"), "output should contain no ANSI escape codes with --no-color");
+}
+
+#[test]
+fn no_color_env_var_produces_plain_output() {
+    let dir = temp_project(None);
+
+    let output = forge()
+        .current_dir(dir.path())
+        .env("NO_COLOR", "1")
+        .args(["generate", "service", "products", "dry-run"])
+        .output()
+        .unwrap();
+
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(!stdout.contains("\x1b"), "NO_COLOR env var should disable colours");
+}
+
+// Exit codes
+#[test]
+fn success_exits_zero() {
+    let dir = temp_project(None);
+
+    forge()
+        .current_dir(dir.path())
+        .args(["generate", "service", "products", "--dry-run"])
+        .assert()
+        .success()
+        .code(0);
+}
+
+#[test]
+fn error_exits_nonzero() {
+    let dir = temp_project(None);
+
+    forge()
+        .current_dir(dir.path())
+        .args(["generate", "foobar", "products"])
+        .assert()
+        .failure()
+        .code(1);
+
 }

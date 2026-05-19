@@ -1,94 +1,109 @@
+use std::collections::BTreeMap;
+
 use console::style;
-use forge_core::generator::GenerationOutput;
+use forge_core::generator::{GeneratedFile, GenerationOutput};
+
+use crate::theme;
 
 /// Render the result of a generation run to stdout.
-/// Extracted from generate.rs so it can be tested independently.
 pub fn print_generation_result(output: &GenerationOutput) {
     if output.files.is_empty() {
-        println!("{} Nothing to generate", style("◆").yellow());
+        println!();
+        println!("  {} Nothing to generate",theme::icon_warning());
+        println!();
         return;
     }
 
     if output.dry_run {
+        println!();
         println!(
-            "{} Dry run - showing what would be generated\n",
-            style("◆").cyan().bold()
+            "   {} Dry run - no files will be written",
+            theme::icon_dry_run()
         );
     }
+    
+    println!();
+    render_file_tree(&output.files, output.dry_run);
+    render_summary(&output.files, output.dry_run);
+    println!();
+}
 
-    // Group files by their parent directory for tree rendering
-    use std::collections::BTreeMap;
-    let mut tree: BTreeMap<String, Vec<&forge_core::generator::GeneratedFile>> = BTreeMap::new();
+/// Render files grouped by their parent directory as a tree
+fn render_file_tree(files: &[GeneratedFile], dry_run:bool) {
+    let mut tree: BTreeMap<String, Vec<&GeneratedFile>> = BTreeMap::new();
 
-    for file in &output.files {
+    for file in files {
         let dir = file
             .path
             .parent()
             .map(|p| p.display().to_string())
             .unwrap_or_else(|| ".".to_string());
-
         tree.entry(dir).or_default().push(file);
     }
 
-    for (dir, files) in &tree {
-        println!("   {}", style(dir).dim());
+    for (dir, dir_files) in &tree {
+        // Directory line dimmed, no icon
+        println!("  {}", theme::muted(dir));
 
-        let count = files.len();
-        for file in files.iter() {
-            let is_last = 1 == count - 1;
-            let branch = if is_last { "└─" } else { "├─" };
+        let count = dir_files.len();
+        for (i, file) in dir_files.iter().enumerate() {
+            let is_last = i == count - 1;
+            let branch = if is_last { theme::tree_last() } else { theme::tree_branch() };
+
             let filename = file
                 .path
                 .file_name()
-                .map(|n| n.to_string_lossy())
+                .map(|n| n.to_string_lossy().to_string())
                 .unwrap_or_default();
 
+            // Color code by file type
+            let formatted_name = format_filename(&filename);
+
             if file.skipped {
-                println!(
-                    "  {} {} {}",
-                    style(branch).dim(),
-                    style("SKIP ").yellow(),
-                    style(filename).yellow().dim()
-                );
-            } else if output.dry_run {
-                println!(
-                    "  {} {} {}",
-                    style(branch).dim(),
-                    style("CREATE ").cyan(),
-                    style(filename).bold()
-                );
+                println!("  {} {} {}", style(branch).dim(), theme::label_skip(), style(filename).yellow().dim());
+            } else if dry_run {
+                println!("  {} {} {}", style(branch).dim(), theme::label_create_dry(), formatted_name);
             } else {
-                println!(
-                    "  {} {} {}",
-                    style(branch).dim(),
-                    style("CREATE ").green(),
-                    style(filename).bold()
-                );
+                println!("  {} {} {}", style(branch).dim(), theme::label_create(), formatted_name);
             }
         }
 
         println!();
     }
+}
 
-    // Summary line
-    let created = output.files.iter().filter(|f| !f.skipped).count();
-    let skipped = output.files.iter().filter(|f| f.skipped).count();
-
-    if output.dry_run {
-        println!(
-            "  {} {} file(s) would be created",
-            style("◆").cyan().bold(),
-            style(created).bold()
-        );
+/// Color filename by their extension, main files are bold, spec files are dimmed;
+fn format_filename(name: &str) -> String {
+    if name.contains(".spec") {
+        style(name).dim().to_string()
     } else {
-        println!(
-            "  {} {} file(s) created",
-            style("✓").green(),
-            style(created).bold()
-        );
+        style(name).bold().to_string()
+    }
+}
 
+/// One-line summary at the bottom: "4 files created, 1 skipped"
+fn render_summary(files: &[GeneratedFile], dry_run:bool) {
+    let created = files.iter().filter(|f| !f.skipped).count();
+    let skipped = files.iter().filter(|f| f.skipped).count();
+
+    if dry_run {
+        println!(
+            "   {} {} file(s) would be created",
+            theme::icon_dry_run(),
+            style(created).bold()
+        )
+    } else {
+        let mut summary = format!(
+            "   {} {} file(s) created",
+            theme::icon_success(),
+            style(created).green().bold(),
+        );
         if skipped > 0 {
-            println!(", {} file(s) skipped", style("skipped").yellow());
+            summary.push_str(&format!(
+                "   {} skipped",
+                style(skipped).yellow()
+            ));
         }
+        println!("{summary}")
     }
 }
