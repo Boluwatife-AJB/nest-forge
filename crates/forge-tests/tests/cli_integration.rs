@@ -640,3 +640,19 @@ fn error_exits_nonzero() {
         .code(1);
 
 }
+
+#[test]
+fn displayed_paths_use_forward_slashes() {
+    let dir = temp_project(None);
+
+    let output = forge()
+        .current_dir(dir.path())
+        .args(["generate", "service", "products", "--dry-run"])
+        .output()
+        .unwrap();
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+
+    assert!(stdout.contains("products.service.ts"));
+    assert!(!stdout.contains("\\"), "displayed paths should use forward slashes, got: \n{stdout}");
+}

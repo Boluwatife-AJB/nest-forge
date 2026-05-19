@@ -2,7 +2,12 @@
 name = "forge-template"
 version = "0.1.0"
 edition = "2024"
+description = "Template engine for the forge NestJS code generator"
 license = "MIT"
+repository = "https://github.com/Boluwatife-AJB/nest-forge"
+keywords = ["template", "nestjs", "codegen"]
+categories = ["development-tools", "template-engine"]
+rust-version.workspace = true
 
 [dependencies]
 thiserror.workspace = true

@@ -28,6 +28,11 @@ pub fn print_generation_result(output: &GenerationOutput) {
     println!();
 }
 
+/// Display a path with Unix-style slashes regardless of the operating system.
+pub fn display_path(path: &std::path::Path) -> String {
+    path.display().to_string().replace("\\", "/")
+}
+
 /// Render files grouped by their parent directory as a tree
 fn render_file_tree(files: &[GeneratedFile], dry_run:bool) {
     let mut tree: BTreeMap<String, Vec<&GeneratedFile>> = BTreeMap::new();
@@ -36,7 +41,7 @@ fn render_file_tree(files: &[GeneratedFile], dry_run:bool) {
         let dir = file
             .path
             .parent()
-            .map(|p| p.display().to_string())
+            .map(|p| display_path(&p))
             .unwrap_or_else(|| ".".to_string());
         tree.entry(dir).or_default().push(file);
     }

@@ -1,0 +1,14 @@
+[workspace]
+# Bump all crates together — they're always released as a unit
+consolidate-commits = true
+consolidate-pushes = true
+
+# Git tag format, this is what triggers the release workflow
+tag-name = "v{{version}}"
+
+# Commit message when bumping versions
+pre-release-commit-message = "chore: release v{{version}}"
+
+# Don't push until we're sure everything is correct
+push = true
+publish = false   # cargo-release handles the commit/tag; CI handles publishing

@@ -4,6 +4,16 @@ version = "0.1.0"
 edition = "2024"
 description = "A NestJS artifact generator CLI tool, built with Rust"
 license = "MIT"
+repository = "https://github.com/Boluwatife-AJB/nest-forge"
+homepage = "https://github.com/Boluwatife-AJB/nest-forge"
+
+keywords = ["nestjs", "codegen", "cli", "typescript", "scaffold"]
+categories = ["command-line-utilities", "development-tools"]
+exclude = [
+    "tests/",
+    ".github/",
+]
+rust-version.workspace = true
 
 [[bin]]
 name="forge"

@@ -3,6 +3,7 @@ name = "forge-tests"
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
+rust-version.workspace = true
 
 [dependencies]
 assert_cmd = { workspace = true}

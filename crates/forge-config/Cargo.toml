@@ -2,8 +2,12 @@
 name = "forge-config"
 version = "0.1.0"
 edition = "2024"
-description = "Configuration loading and resolution for forge"
+description = "Configuration loading and resolution for the forge NestJS CLI tool"
 license = "MIT"
+repository = "https://github.com/Boluwatife-AJB/nest-forge"
+keywords = ["config", "nestjs", "cli"]
+categories = ["development-tools"]
+rust-version.workspace = true
 
 [dependencies]
 thiserror.workspace = true

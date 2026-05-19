@@ -2,8 +2,12 @@
 name = "forge-core"
 version = "0.1.0"
 edition = "2024"
-description = "Core artifact generation logic for nest-forge"
+description = "Core artifact generation logic for forge NestJS CLI tool"
 license = "MIT"
+repository = "https://github.com/Boluwatife-AJB/nest-forge"
+keywords = ["nestjs", "codegen", "typescript"]
+categories = ["development-tools"]
+rust-version.workspace = true
 
 [dependencies]
 thiserror.workspace = true

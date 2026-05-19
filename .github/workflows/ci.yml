@@ -144,4 +144,25 @@ jobs:
 
       - name: Check licenses and advisories
         run: cargo deny check
+    
+  release-build: 
+    name: Release build check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build release profile
+        run: cargo build --release --workspace
+
+      - name: Report binary size
+        run: |
+          ls -lh target/release/forge
+          echo "Binary size: $(du -sh target/release/forge | cut -f1)"
 
