@@ -2,12 +2,7 @@ use anyhow::{Result, anyhow};
 use clap::Args;
 use console::style;
 
-use forge_config::{
-    find_project_root_or_fallback, 
-    parse_forge_json, 
-    resolve_config, 
-    CliOverrides
-};
+use forge_config::{CliOverrides, find_project_root_or_fallback, parse_forge_json, resolve_config};
 use forge_core::artifact::{ArtifactKind, GenerationRequest};
 use forge_core::fs::RealFileSystem;
 use forge_core::generator::Generator;
@@ -69,7 +64,7 @@ pub fn run(args: GenerateArgs) -> Result<()> {
     let cwd = std::env::current_dir()?;
     let (project_root, config_found) = find_project_root_or_fallback(&cwd);
 
-    let file_config = if  config_found {
+    let file_config = if config_found {
         let config_path = project_root.join("forge.json");
         let parsed = parse_forge_json(&config_path).map_err(|e| anyhow!("Config error: {e}"))?;
 
@@ -85,7 +80,8 @@ pub fn run(args: GenerateArgs) -> Result<()> {
         source_root: args.path.clone(),
     };
 
-    let config = resolve_config(&project_root, file_config.as_ref(), &cli_overrides).map_err(|e| anyhow!("Config error: {e}"))?;
+    let config = resolve_config(&project_root, file_config.as_ref(), &cli_overrides)
+        .map_err(|e| anyhow!("Config error: {e}"))?;
 
     // Per-artifact path override > source_root
     let output_path = config.output_path_for(kind.template_name()).clone();
@@ -102,7 +98,7 @@ pub fn run(args: GenerateArgs) -> Result<()> {
 
     if config_found {
         tracing::debug!(root = %project_root.display(), source_root = %config.source_root.display(), "using project config");
-    } 
+    }
 
     // Run generator
     let generator = Generator::new(RealFileSystem)?;
@@ -112,8 +108,11 @@ pub fn run(args: GenerateArgs) -> Result<()> {
 
     // Show where config came from (only in verbose mode)
     if config_found {
-        tracing::debug!("config loaded from {}", project_root.join("forge.json").display());
-    } 
+        tracing::debug!(
+            "config loaded from {}",
+            project_root.join("forge.json").display()
+        );
+    }
 
     Ok(())
 }

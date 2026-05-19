@@ -7,7 +7,7 @@ mod parser;
 pub use defaults::ConfigDefaults;
 pub use discovery::{find_project_root, find_project_root_or_fallback};
 pub use error::{ConfigError, ConfigResult};
-pub use merge::{resolve_config, CliOverrides};
+pub use merge::{CliOverrides, resolve_config};
 pub use parser::parse_forge_json;
 
 use serde::{Deserialize, Serialize};
@@ -37,7 +37,7 @@ pub struct ResolvedConfig {
 }
 
 impl ResolvedConfig {
-  pub fn output_path_for(&self, artifact_kind: &str) -> &PathBuf {
-    self.paths.get(artifact_kind).unwrap_or(&self.source_root)
-  }
+    pub fn output_path_for(&self, artifact_kind: &str) -> &PathBuf {
+        self.paths.get(artifact_kind).unwrap_or(&self.source_root)
+    }
 }

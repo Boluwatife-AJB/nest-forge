@@ -33,7 +33,7 @@ enum Commands {
     Init,
 
     /// Show forge environment info
-    Info
+    Info,
 }
 
 fn main() -> Result<()> {

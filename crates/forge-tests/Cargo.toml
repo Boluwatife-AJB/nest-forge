@@ -4,10 +4,10 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-assert_cmd = {workspace = true}
-predicates = {workspace = true}
-insta = {workspace = true}
-tempfile = {workspace = true}
+assert_cmd = { workspace = true}
+predicates = { workspace = true}
+insta = { workspace = true}
+tempfile = { workspace = true}
 serde_json ={ workspace = true}
 forge-config ={ path="../forge-config" }
 forge-core ={ path="../forge-core" }

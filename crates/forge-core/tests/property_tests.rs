@@ -6,12 +6,11 @@
 use forge_core::artifact::ArtifactName;
 use proptest::prelude::*;
 
-
 // Name validation Properties
 /// A regex strategy that generates valid artifact names.
 fn valid_name_strategy() -> impl Strategy<Value = String> {
-  // Start with a letter, followed by 0-30 valid characters
-  "[a-zA-Z][a-zA-Z0-9_-]{0,30}".prop_map(|s| s)
+    // Start with a letter, followed by 0-30 valid characters
+    "[a-zA-Z][a-zA-Z0-9_-]{0,30}".prop_map(|s| s)
 }
 
 proptest! {
@@ -77,8 +76,8 @@ proptest! {
     let name = format!("{digit}{rest}");
     prop_assert!(
       ArtifactName::parse(&name).is_err(), "name starting with digit '{}' should be rejected", name);
-    }    
-    
+    }
+
 }
 
 // ArtifactKind resolution properties

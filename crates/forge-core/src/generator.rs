@@ -164,8 +164,6 @@ mod tests {
         );
     }
 
-    
-
     #[test]
     fn flat_flag_skips_subdirectory() {
         let fs = InMemoryFileSystem::new();
@@ -240,11 +238,18 @@ mod tests {
         let mut req = make_request(ArtifactKind::Controller, "product-inventory");
         req.generate_spec = true;
 
-        generator.generate(&req).expect("controller generation should succeed");
+        generator
+            .generate(&req)
+            .expect("controller generation should succeed");
 
-        let has_class = fs.written_files().values().any(|src| src.contains("class ProductInventoryController"));
-        assert!(has_class, "expected ProductInventoryController in written files, paths: {:?}", fs.written_files().keys().collect::<Vec<_>>());
-
-       
+        let has_class = fs
+            .written_files()
+            .values()
+            .any(|src| src.contains("class ProductInventoryController"));
+        assert!(
+            has_class,
+            "expected ProductInventoryController in written files, paths: {:?}",
+            fs.written_files().keys().collect::<Vec<_>>()
+        );
     }
 }

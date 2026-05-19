@@ -69,9 +69,7 @@ mod tests {
     // ArtifactKind resolution
     #[test]
     fn resolves_full_names() {
-        assert_eq!(
-            "service".parse::<ArtifactKind>(), Ok(ArtifactKind::Service)
-        );
+        assert_eq!("service".parse::<ArtifactKind>(), Ok(ArtifactKind::Service));
         assert_eq!(
             "controller".parse::<ArtifactKind>(),
             Ok(ArtifactKind::Controller)
@@ -87,10 +85,7 @@ mod tests {
 
     #[test]
     fn resolution_is_case_insensitive() {
-        assert_eq!(
-            "SERVICE".parse::<ArtifactKind>(),
-            Ok(ArtifactKind::Service)
-        );
+        assert_eq!("SERVICE".parse::<ArtifactKind>(), Ok(ArtifactKind::Service));
         assert_eq!("Module".parse::<ArtifactKind>(), Ok(ArtifactKind::Module));
     }
 

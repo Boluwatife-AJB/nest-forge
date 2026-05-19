@@ -16,5 +16,5 @@ edit-distance = "2"
 
 [dev-dependencies]
 tempfile.workspace = true
-insta = {workspace = true}
+insta = { workspace = true}
 proptest = { workspace = true}

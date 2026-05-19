@@ -1,17 +1,25 @@
 //! Snapshot tests for all artifact templates.
-//! 
+//!
 //! These tests render every artifact template with a fixed input
 //! and compare the output against a saved snapshot file.
 
 use forge_template::engine::{NameContext, TemplateContext, TemplateEngine};
-use heck::{ToLowerCamelCase, ToKebabCase, ToPascalCase, ToSnakeCase};
+use heck::{ToKebabCase, ToLowerCamelCase, ToPascalCase, ToSnakeCase};
 
 fn test_ctx(name: &str) -> TemplateContext {
-  TemplateContext { name: NameContext { raw: name.to_string(), snake: name.to_snake_case(), kebab: name.to_kebab_case(), pascal: name.to_pascal_case(), camel: name.to_lower_camel_case() } }
+    TemplateContext {
+        name: NameContext {
+            raw: name.to_string(),
+            snake: name.to_snake_case(),
+            kebab: name.to_kebab_case(),
+            pascal: name.to_pascal_case(),
+            camel: name.to_lower_camel_case(),
+        },
+    }
 }
 
 fn engine() -> TemplateEngine {
-  TemplateEngine::new().expect("engine must initialize from embedded templates")
+    TemplateEngine::new().expect("engine must initialize from embedded templates")
 }
 
 /// Render all files for an artifact and snapshot each one.
@@ -21,15 +29,23 @@ macro_rules! snapshot_artifact {
     ($test_name:ident, $artifact:expr, $name:expr, $spec:expr) => {
         #[test]
         fn $test_name() {
-          let engine = engine();
-          let ctx = test_ctx($name);
-          let files = engine.render($artifact, $name, &ctx, $spec).expect(concat!("should render ", $artifact));
+            let engine = engine();
+            let ctx = test_ctx($name);
+            let files = engine
+                .render($artifact, $name, &ctx, $spec)
+                .expect(concat!("should render ", $artifact));
 
-          for file in &files {
-            let snapshot_name = format!("{}__{}", $artifact, file.relative_path.to_string_lossy().replace(['/', '\\', '.'], "_"));
+            for file in &files {
+                let snapshot_name = format!(
+                    "{}__{}",
+                    $artifact,
+                    file.relative_path
+                        .to_string_lossy()
+                        .replace(['/', '\\', '.'], "_")
+                );
 
-            insta::assert_snapshot!(snapshot_name, file.contents);
-          }
+                insta::assert_snapshot!(snapshot_name, file.contents);
+            }
         }
     };
 }
@@ -53,7 +69,27 @@ snapshot_artifact!(snapshot_class, "class", "products", true);
 snapshot_artifact!(snapshot_config, "config", "products", true);
 
 // Multi-word names
-snapshot_artifact!(snapshot_service_multiword, "service", "product_categories", false);
-snapshot_artifact!(snapshot_controller_multiword, "controller", "product_categories", false);
-snapshot_artifact!(snapshot_entity_multiword, "entity", "product_categories", false);
-snapshot_artifact!(snapshot_dto_multiword, "dto", "create_product_category_dto", false);
+snapshot_artifact!(
+    snapshot_service_multiword,
+    "service",
+    "product_categories",
+    false
+);
+snapshot_artifact!(
+    snapshot_controller_multiword,
+    "controller",
+    "product_categories",
+    false
+);
+snapshot_artifact!(
+    snapshot_entity_multiword,
+    "entity",
+    "product_categories",
+    false
+);
+snapshot_artifact!(
+    snapshot_dto_multiword,
+    "dto",
+    "create_product_category_dto",
+    false
+);

@@ -97,134 +97,152 @@ fn validate_language(lang: &str) -> ConfigResult<()> {
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  const FAKE_ROOT : &str = "/project";
+    const FAKE_ROOT: &str = "/project";
 
-  fn root() -> &'static Path {
-    Path::new(FAKE_ROOT)
-  }
+    fn root() -> &'static Path {
+        Path::new(FAKE_ROOT)
+    }
 
-  // Defaults
-  #[test]
-  fn all_defaults_when_no_config_and_no_overrides() {
-    let config = resolve_config(root(), None, &CliOverrides::default()).expect("should resolve with no inputs");
+    // Defaults
+    #[test]
+    fn all_defaults_when_no_config_and_no_overrides() {
+        let config = resolve_config(root(), None, &CliOverrides::default())
+            .expect("should resolve with no inputs");
 
-    assert_eq!(config.source_root, Path::new("/project/src"));
-    assert_eq!(config.language, "ts");
-    assert!(config.generate_spec);
-    assert!(!config.flat);
-    assert!(config.paths.is_empty());
-  }
+        assert_eq!(config.source_root, Path::new("/project/src"));
+        assert_eq!(config.language, "ts");
+        assert!(config.generate_spec);
+        assert!(!config.flat);
+        assert!(config.paths.is_empty());
+    }
 
-  // File config overrides defaults
-  #[test]
-  fn file_config_overrides_source_root() {
-    let file = ForgeJsonFile {
-      source_root: Some("app".to_string()),
-      ..Default::default()
-    };
+    // File config overrides defaults
+    #[test]
+    fn file_config_overrides_source_root() {
+        let file = ForgeJsonFile {
+            source_root: Some("app".to_string()),
+            ..Default::default()
+        };
 
-    let config = resolve_config(root(), Some(&file), &CliOverrides::default()).expect("should resolve with file config");
+        let config = resolve_config(root(), Some(&file), &CliOverrides::default())
+            .expect("should resolve with file config");
 
-    assert_eq!(config.source_root, Path::new("/project/app"));
-  }
+        assert_eq!(config.source_root, Path::new("/project/app"));
+    }
 
-  #[test]
-  fn file_can_disable_spec_generation() {
-    let file = ForgeJsonFile {
-      generate_spec: Some(false),
-      ..Default::default()
-    };
+    #[test]
+    fn file_can_disable_spec_generation() {
+        let file = ForgeJsonFile {
+            generate_spec: Some(false),
+            ..Default::default()
+        };
 
-    let config = resolve_config(root(), Some(&file), &CliOverrides::default()).expect("should resolve with file config");
+        let config = resolve_config(root(), Some(&file), &CliOverrides::default())
+            .expect("should resolve with file config");
 
-    assert!(!config.generate_spec);
-  }
+        assert!(!config.generate_spec);
+    }
 
-  #[test]
-  fn file_config_path_overrides_are_resolved_to_absolute() {
-    let mut paths = HashMap::new();
-    paths.insert("entity".into(), "src/database/entities".into());
+    #[test]
+    fn file_config_path_overrides_are_resolved_to_absolute() {
+        let mut paths = HashMap::new();
+        paths.insert("entity".into(), "src/database/entities".into());
 
+        let file = ForgeJsonFile {
+            paths: Some(paths),
+            ..Default::default()
+        };
 
-    let file = ForgeJsonFile {
-      paths: Some(paths),
-      ..Default::default()
-    };
+        let config = resolve_config(root(), Some(&file), &CliOverrides::default())
+            .expect("should resolve with file config");
 
-    let config = resolve_config(root(), Some(&file), &CliOverrides::default()).expect("should resolve with file config");
+        assert_eq!(
+            config.paths.get("entity"),
+            Some(&PathBuf::from("/project/src/database/entities"))
+        );
+    }
 
-    assert_eq!(config.paths.get("entity"), Some(&PathBuf::from("/project/src/database/entities")));
-  }
+    // CLI Overrides
+    #[test]
+    fn cli_overrides_beats_file_config() {
+        let overrides = CliOverrides {
+            generate_spec: Some(false),
+            ..Default::default()
+        };
 
-  // CLI Overrides
-  #[test]
-  fn cli_overrides_beats_file_config() {
-  let overrides = CliOverrides {
-    generate_spec: Some(false),
-    ..Default::default()
-  };
+        let config = resolve_config(root(), None, &overrides)
+            .expect("should resolve with file config and cli overrides");
+        assert!(!config.flat);
+    }
 
-  let config = resolve_config(root(), None, &overrides).expect("should resolve with file config and cli overrides");
-  assert!(!config.flat);
-}
+    // Validation
+    #[test]
+    fn invalid_language_is_rejected() {
+        let file = ForgeJsonFile {
+            language: Some("rust".to_string()),
+            ..Default::default()
+        };
 
+        let result = resolve_config(root(), Some(&file), &CliOverrides::default());
+        assert!(
+            matches!(result, Err(ConfigError::InvalidField { field, .. }) if field == "language"),
+            "should reject InvalidField for bad language"
+        );
+    }
 
-// Validation
-#[test]
-fn invalid_language_is_rejected() {
-  let file = ForgeJsonFile {
-    language: Some("rust".to_string()),
-    ..Default::default()
-};
+    #[test]
+    fn path_escape_attempt_returns_error() {
+        let mut paths = HashMap::new();
+        paths.insert("entity".into(), "../outside-project".into());
 
-  let result = resolve_config(root(), Some(&file), &CliOverrides::default());
-  assert!(matches!(result, Err(ConfigError::InvalidField { field, .. }) if field == "language"), "should reject InvalidField for bad language");
-}
+        let file = ForgeJsonFile {
+            paths: Some(paths),
+            ..Default::default()
+        };
 
-#[test]
-fn path_escape_attempt_returns_error() {
-  let mut paths = HashMap::new();
-  paths.insert("entity".into(), "../outside-project".into());
+        let result = resolve_config(root(), Some(&file), &CliOverrides::default());
+        assert!(
+            matches!(result, Err(ConfigError::InvalidField { .. })),
+            "paths that escape the project root should be rejected"
+        );
+    }
 
-  let file = ForgeJsonFile {
-    paths: Some(paths),
-    ..Default::default()
-};
+    #[test]
+    fn output_path_for_returns_override_when_set() {
+        let mut paths = HashMap::new();
+        paths.insert("entity".into(), PathBuf::from("project/src/db"));
 
-  let result = resolve_config(root(), Some(&file), &CliOverrides::default());
-  assert!(matches!(result, Err(ConfigError::InvalidField { .. })), "paths that escape the project root should be rejected");
-}
+        let config = ResolvedConfig {
+            project_root: PathBuf::from("project"),
+            source_root: PathBuf::from("project/src"),
+            language: "ts".to_string(),
+            generate_spec: true,
+            flat: false,
+            paths,
+        };
 
-#[test]
-fn output_path_for_returns_override_when_set() {
-  let mut paths = HashMap::new();
-  paths.insert("entity".into(), PathBuf::from("project/src/db"));
+        assert_eq!(
+            config.output_path_for("entity"),
+            &PathBuf::from("project/src/db")
+        );
+    }
 
-  let config = ResolvedConfig {
-    project_root: PathBuf::from("project"),
-    source_root: PathBuf::from("project/src"),
-    language: "ts".to_string(),
-    generate_spec: true,
-    flat: false,
-    paths,
-  };
+    #[test]
+    fn output_path_for_falls_back_to_source_root_path_when_not_set() {
+        let config = ResolvedConfig {
+            project_root: PathBuf::from("project"),
+            source_root: PathBuf::from("project/src"),
+            language: "ts".to_string(),
+            generate_spec: true,
+            flat: false,
+            paths: HashMap::new(),
+        };
 
-  assert_eq!(config.output_path_for("entity"), &PathBuf::from("project/src/db"));
-}
-
-#[test]
-fn output_path_for_falls_back_to_source_root_path_when_not_set() {
-  let config = ResolvedConfig {
-    project_root: PathBuf::from("project"),
-    source_root: PathBuf::from("project/src"),
-    language: "ts".to_string(),
-    generate_spec: true,
-    flat: false,
-    paths: HashMap::new(),
-  };
-
-  assert_eq!(config.output_path_for("service"), &PathBuf::from("project/src"));
-}
+        assert_eq!(
+            config.output_path_for("service"),
+            &PathBuf::from("project/src")
+        );
+    }
 }
