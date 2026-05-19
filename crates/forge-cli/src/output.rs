@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+    use std::collections::BTreeMap;
 
 use console::style;
 use forge_core::generator::{GeneratedFile, GenerationOutput};

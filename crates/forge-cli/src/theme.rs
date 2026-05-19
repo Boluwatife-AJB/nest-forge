@@ -48,7 +48,7 @@ pub fn tree_branch() -> &'static str {
 }
 
 pub fn tree_last() -> &'static str {
-  if cfg!(windows) {"\\--"} else {"└──"}
+  if cfg!(windows) {"+--"} else {"└──"}
 }
 
 // Typography
