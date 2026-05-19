@@ -3,6 +3,7 @@ name = "forge-config"
 version = "0.1.0"
 edition = "2024"
 description = "Configuration loading and resolution for forge"
+license = "MIT"
 
 [dependencies]
 thiserror.workspace = true
