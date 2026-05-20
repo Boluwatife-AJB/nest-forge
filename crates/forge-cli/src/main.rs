@@ -9,6 +9,8 @@ mod errors;
 mod output;
 mod theme;
 
+
+
 #[derive(Parser)]
 #[command(
     name="forge",
@@ -24,6 +26,7 @@ mod theme;
                   forge generate service users\n  \
                   forge g controller auth --flat\n  \
                   forge g dto create-user --dry-run",
+                
 )]
 struct Cli {
     /// Enable verbose output
@@ -37,14 +40,14 @@ struct Cli {
     #[command(subcommand)]
     command: Commands,
 }
-
+							
 #[derive(Subcommand)]
 enum Commands {
     /// Generate a NestJS artifact
     #[command(alias = "g")]
     Generate(commands::generate::GenerateArgs),
 
-    /// Initalize forge.json in the current directory
+    /// Initialize forge.json in the current directory
     Init,
 
     /// Show forge environment info

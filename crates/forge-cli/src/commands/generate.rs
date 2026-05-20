@@ -76,6 +76,9 @@ pub fn run(args: GenerateArgs) -> Result<()> {
     let cwd = std::env::current_dir()?;
     let (project_root, config_found) = find_project_root_or_fallback(&cwd);
 
+    // print!("Project Root: {:#}\n", project_root.display());
+    // print!("Config Found: {:#}", config_found);
+
     let file_config = if config_found {
         tracing::debug!(
             root = %project_root.display(),
