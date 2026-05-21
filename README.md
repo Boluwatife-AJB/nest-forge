@@ -249,13 +249,23 @@ cargo fmt
 
 ### Pre-commit hook
 
-Enable the tracked Git hook so formatting is checked before each commit:
+Enable the tracked Git hook so CI-style checks run before each commit:
 
 ```bash
 git config core.hooksPath .githooks
 ```
 
 The hook runs `cargo fmt --all -- --check` and blocks the commit if formatting is needed.
+The hook runs these commands and blocks the commit if any one fails:
+
+- `cargo fmt --all -- --check`
+- `cargo clippy --workspace --all-targets -- -D warnings`
+- `cargo update --locked`
+- `cargo build --workspace`
+- `cargo test --workspace`
+- `cargo test -p forge-template --test snapshot_tests`
+- `cargo test -p forge-core --test property_tests`
+- `cargo test -p forge-tests`
 
 ### Quality Gates
 

@@ -5,10 +5,50 @@ set -eu
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "$REPO_ROOT"
 
-echo "pre-commit: checking Rust formatting"
-if ! cargo fmt --all -- --check; then
-  echo >&2 ""
-  echo >&2 "pre-commit: formatting check failed."
-  echo >&2 "Run 'cargo fmt --all' and commit again."
+find_cargo() {
+  if command -v cargo >/dev/null 2>&1; then
+    command -v cargo
+    return 0
+  fi
+
+  if command -v cargo.exe >/dev/null 2>&1; then
+    command -v cargo.exe
+    return 0
+  fi
+
+  if [ -n "${USERPROFILE:-}" ] && [ -x "$USERPROFILE/.cargo/bin/cargo.exe" ]; then
+    printf '%s\n' "$USERPROFILE/.cargo/bin/cargo.exe"
+    return 0
+  fi
+
+  if [ -n "${HOME:-}" ] && [ -x "$HOME/.cargo/bin/cargo" ]; then
+    printf '%s\n' "$HOME/.cargo/bin/cargo"
+    return 0
+  fi
+
+  return 1
+}
+
+CARGO_BIN="$(find_cargo || true)"
+if [ -z "$CARGO_BIN" ]; then
+  echo >&2 "pre-commit: cargo executable not found in PATH."
+  echo >&2 "Install Rust or add cargo to PATH and try again."
   exit 1
 fi
+
+run_check() {
+  echo "pre-commit: $1"
+  shift
+  "$@"
+}
+
+run_check "checking Rust formatting" "$CARGO_BIN" fmt --all -- --check
+run_check "running Clippy" "$CARGO_BIN" clippy --workspace --all-targets -- -D warnings
+run_check "checking Cargo.lock is up to date" "$CARGO_BIN" update --locked
+run_check "building workspace" "$CARGO_BIN" build --workspace
+run_check "running unit and integration tests (workspace)" "$CARGO_BIN" test --workspace
+run_check "running snapshot tests" "$CARGO_BIN" test -p forge-template --test snapshot_tests
+run_check "running property-based tests" "$CARGO_BIN" test -p forge-core --test property_tests
+run_check "running forge CLI integration tests" "$CARGO_BIN" test -p forge-tests
+
+echo "pre-commit: all checks passed"
