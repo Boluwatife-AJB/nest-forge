@@ -499,7 +499,9 @@ fn error_includes_hint() {
         .args(["generate", "foobar", "products"])
         .assert()
         .failure()
-        .stderr(predicate::str::contains("hint:").or(predicate::str::contains("forge generate --help")));
+        .stderr(
+            predicate::str::contains("hint:").or(predicate::str::contains("forge generate --help")),
+        );
 }
 
 // Shell completions
@@ -596,7 +598,10 @@ fn no_color_flag_produces_plain_output() {
     );
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    assert!(!stdout.contains("\x1b"), "output should contain no ANSI escape codes with --no-color");
+    assert!(
+        !stdout.contains("\x1b"),
+        "output should contain no ANSI escape codes with --no-color"
+    );
 }
 
 #[test]
@@ -610,9 +615,11 @@ fn no_color_env_var_produces_plain_output() {
         .output()
         .unwrap();
 
-
     let stdout = String::from_utf8_lossy(&output.stdout);
-    assert!(!stdout.contains("\x1b"), "NO_COLOR env var should disable colours");
+    assert!(
+        !stdout.contains("\x1b"),
+        "NO_COLOR env var should disable colours"
+    );
 }
 
 // Exit codes
@@ -638,7 +645,6 @@ fn error_exits_nonzero() {
         .assert()
         .failure()
         .code(1);
-
 }
 
 #[test]
@@ -654,14 +660,16 @@ fn displayed_paths_use_forward_slashes() {
     let stdout = String::from_utf8_lossy(&output.stdout);
 
     for line in stdout.lines() {
-        let is_path_line = line.contains("src") 
+        let is_path_line = line.contains("src")
             || line.contains("products")
             || line.contains("Temp")
             || line.contains("tmp");
 
-
         if is_path_line {
-            assert!(!line.contains("\\"), "path line muse use forward slashes:\n    {line}")
+            assert!(
+                !line.contains("\\"),
+                "path line muse use forward slashes:\n    {line}"
+            )
         }
     }
 

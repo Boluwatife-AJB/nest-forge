@@ -22,7 +22,7 @@ use crate::errors::print_warning;
                   forge generate service users\n  \
                   forge g controller auth --flat\n  \
                   forge g dto create-user --dry-run\n  \
-                  forge g module user-profile --spec=false",
+                  forge g module user-profile --spec=false"
 )]
 pub struct GenerateArgs {
     /// The artifact type to generate (e.g module, service)
@@ -32,7 +32,10 @@ pub struct GenerateArgs {
     pub name: String,
 
     /// Skip creating a subdirectory
-    #[arg(long, help = "Skip creating a subdirectory, place files in the output path directly")]
+    #[arg(
+        long,
+        help = "Skip creating a subdirectory, place files in the output path directly"
+    )]
     pub flat: Option<bool>,
 
     /// Preview what will be generated without writing any files
@@ -40,11 +43,20 @@ pub struct GenerateArgs {
     pub dry_run: bool,
 
     /// Output path relative to src/
-    #[arg(long, short, value_name = "PATH", help = "Output path relative to project root (overrides forge.json paths")]
+    #[arg(
+        long,
+        short,
+        value_name = "PATH",
+        help = "Output path relative to project root (overrides forge.json paths"
+    )]
     pub path: Option<String>,
 
     /// Generate a spec (test) file alongside artifact
-    #[arg(long, value_name = "BOOL", help = "Generate a spec file (default: true, or as configured in forge.json)")]
+    #[arg(
+        long,
+        value_name = "BOOL",
+        help = "Generate a spec file (default: true, or as configured in forge.json)"
+    )]
     pub spec: Option<bool>,
 }
 
@@ -87,8 +99,12 @@ pub fn run(args: GenerateArgs) -> Result<()> {
         let config_path = project_root.join("forge.json");
         match parse_forge_json(&config_path) {
             Ok(c) => Some(c),
-            Err(e) => {print_warning(&format!("forge.json could not be parsed ({e}), using defaults"));
-        None}
+            Err(e) => {
+                print_warning(&format!(
+                    "forge.json could not be parsed ({e}), using defaults"
+                ));
+                None
+            }
         }
         // let parsed = parse_forge_json(&config_path).map_err(|e| anyhow!("Config error: {e}"))?;
 
@@ -135,8 +151,6 @@ pub fn run(args: GenerateArgs) -> Result<()> {
         dry_run: args.dry_run,
         generate_spec: config.generate_spec,
     };
-
-    
 
     // Run generator
     let generator = Generator::new(RealFileSystem)?;

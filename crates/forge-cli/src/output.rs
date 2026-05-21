@@ -1,4 +1,4 @@
-    use std::collections::BTreeMap;
+use std::collections::BTreeMap;
 
 use console::style;
 use forge_core::generator::{GeneratedFile, GenerationOutput};
@@ -9,7 +9,7 @@ use crate::theme;
 pub fn print_generation_result(output: &GenerationOutput) {
     if output.files.is_empty() {
         println!();
-        println!("  {} Nothing to generate",theme::icon_warning());
+        println!("  {} Nothing to generate", theme::icon_warning());
         println!();
         return;
     }
@@ -21,7 +21,7 @@ pub fn print_generation_result(output: &GenerationOutput) {
             theme::icon_dry_run()
         );
     }
-    
+
     println!();
     render_file_tree(&output.files, output.dry_run);
     render_summary(&output.files, output.dry_run);
@@ -34,7 +34,7 @@ pub fn display_path(path: &std::path::Path) -> String {
 }
 
 /// Render files grouped by their parent directory as a tree
-fn render_file_tree(files: &[GeneratedFile], dry_run:bool) {
+fn render_file_tree(files: &[GeneratedFile], dry_run: bool) {
     let mut tree: BTreeMap<String, Vec<&GeneratedFile>> = BTreeMap::new();
 
     for file in files {
@@ -53,7 +53,11 @@ fn render_file_tree(files: &[GeneratedFile], dry_run:bool) {
         let count = dir_files.len();
         for (i, file) in dir_files.iter().enumerate() {
             let is_last = i == count - 1;
-            let branch = if is_last { theme::tree_last() } else { theme::tree_branch() };
+            let branch = if is_last {
+                theme::tree_last()
+            } else {
+                theme::tree_branch()
+            };
 
             let filename = file
                 .path
@@ -65,11 +69,26 @@ fn render_file_tree(files: &[GeneratedFile], dry_run:bool) {
             let formatted_name = format_filename(&filename);
 
             if file.skipped {
-                println!("  {} {} {}", style(branch).dim(), theme::label_skip(), style(filename).yellow().dim());
+                println!(
+                    "  {} {} {}",
+                    style(branch).dim(),
+                    theme::label_skip(),
+                    style(filename).yellow().dim()
+                );
             } else if dry_run {
-                println!("  {} {} {}", style(branch).dim(), theme::label_create_dry(), formatted_name);
+                println!(
+                    "  {} {} {}",
+                    style(branch).dim(),
+                    theme::label_create_dry(),
+                    formatted_name
+                );
             } else {
-                println!("  {} {} {}", style(branch).dim(), theme::label_create(), formatted_name);
+                println!(
+                    "  {} {} {}",
+                    style(branch).dim(),
+                    theme::label_create(),
+                    formatted_name
+                );
             }
         }
 
@@ -87,7 +106,7 @@ fn format_filename(name: &str) -> String {
 }
 
 /// One-line summary at the bottom: "4 files created, 1 skipped"
-fn render_summary(files: &[GeneratedFile], dry_run:bool) {
+fn render_summary(files: &[GeneratedFile], dry_run: bool) {
     let created = files.iter().filter(|f| !f.skipped).count();
     let skipped = files.iter().filter(|f| f.skipped).count();
 
@@ -104,10 +123,7 @@ fn render_summary(files: &[GeneratedFile], dry_run:bool) {
             style(created).green().bold(),
         );
         if skipped > 0 {
-            summary.push_str(&format!(
-                "   {} skipped",
-                style(skipped).yellow()
-            ));
+            summary.push_str(&format!("   {} skipped", style(skipped).yellow()));
         }
         println!("{summary}")
     }

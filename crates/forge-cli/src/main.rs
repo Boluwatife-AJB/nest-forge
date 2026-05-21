@@ -1,5 +1,4 @@
-
-use clap::{Parser, Subcommand, CommandFactory};
+use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::Shell;
 use tracing::Level;
 use tracing_subscriber::EnvFilter;
@@ -9,11 +8,9 @@ mod errors;
 mod output;
 mod theme;
 
-
-
 #[derive(Parser)]
 #[command(
-    name="forge",
+    name = "forge",
     version,
     about = "A NestJS artifact generator, forged in Rust",
     long_about = "forge generates NestJS artifacts (modules, services, controllers, and more)\n\
@@ -25,8 +22,7 @@ mod theme;
                   forge init\n  \
                   forge generate service users\n  \
                   forge g controller auth --flat\n  \
-                  forge g dto create-user --dry-run",
-                
+                  forge g dto create-user --dry-run"
 )]
 struct Cli {
     /// Enable verbose output
@@ -40,7 +36,7 @@ struct Cli {
     #[command(subcommand)]
     command: Commands,
 }
-							
+
 #[derive(Subcommand)]
 enum Commands {
     /// Generate a NestJS artifact
@@ -58,7 +54,7 @@ enum Commands {
         /// The shell to generate completions for
         #[arg(value_enum)]
         shell: Shell,
-    }
+    },
 }
 
 fn main() {
@@ -108,7 +104,6 @@ fn run_completions(shell: Shell) -> anyhow::Result<()> {
     generate(shell, &mut cmd, bin_name, &mut io::stdout());
     Ok(())
 }
-
 
 fn supports_color() -> bool {
     supports_color::on(supports_color::Stream::Stdout).is_some()
