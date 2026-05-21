@@ -247,6 +247,16 @@ cargo clippy --workspace --all-targets -- -D warnings
 cargo fmt
 ```
 
+### Pre-commit hook
+
+Enable the tracked Git hook so formatting is checked before each commit:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The hook runs `cargo fmt --all -- --check` and blocks the commit if formatting is needed.
+
 ### Quality Gates
 
 The repository CI runs formatting, Clippy, unit and integration tests, snapshot tests, property tests, MSRV checks, dependency audits, and a release build verification.

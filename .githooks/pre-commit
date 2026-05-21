@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+set -eu
+
+# Ensure commands run from the repository root even if commit is started in a subdirectory.
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+echo "pre-commit: checking Rust formatting"
+if ! cargo fmt --all -- --check; then
+  echo >&2 ""
+  echo >&2 "pre-commit: formatting check failed."
+  echo >&2 "Run 'cargo fmt --all' and commit again."
+  exit 1
+fi
